@@ -12,6 +12,7 @@ final class ItineraryViewModel {
 
     init(trip: Trip) {
         self.trip = trip
+        self.selectedDay = trip.orderedDays.first
     }
 
     /// Calculates the route for the selected day.
