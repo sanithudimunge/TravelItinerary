@@ -22,6 +22,24 @@ nonisolated final class Trip {
         return (calendar.dateComponents([.day], from: start, to: end).day ?? 0) + 1
     }
 
+    /// Days sorted by day number.
+    var orderedDays: [Day] {
+        days.sorted { $0.number < $1.number }
+    }
+
+    /// Replaces `days` with one empty `Day` for each date from `startDate` to `endDate`.
+    func generateDays() {
+        let calendar = Calendar.current
+        let start = calendar.startOfDay(for: startDate)
+        guard dayCount > 0 else {
+            days = []
+            return
+        }
+        days = (0..<dayCount).compactMap { offset in
+            calendar.date(byAdding: .day, value: offset, to: start).map { Day(date: $0, number: offset + 1) }
+        }
+    }
+
     init(id: UUID = UUID(), title: String, startDate: Date, endDate: Date, owner: User? = nil, days: [Day] = []) {
         self.id = id
         self.title = title

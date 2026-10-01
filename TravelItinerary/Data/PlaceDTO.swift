@@ -9,7 +9,14 @@ struct PlaceDTO: Decodable {
     let address: String?
 
     /// Converts the decoded data into a `Place` model.
+    /// Missing names and unknown categories get fallbacks so the place can still be reviewed by an admin.
     func makeModel() -> Place {
-        fatalError("TODO")
+        Place(
+            name: name ?? "Unnamed place",
+            latitude: lat,
+            longitude: lon,
+            category: ActivityCategory(rawValue: category) ?? .sight,
+            address: address
+        )
     }
 }

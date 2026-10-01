@@ -20,11 +20,20 @@ struct TravelItineraryApp: App {
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
+        let container: ModelContainer
         do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
+            container = try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
             fatalError("Could not create ModelContainer: \(error)")
         }
+
+        // Missing seed data shouldn't stop the app from launching, so log and carry on.
+        do {
+            try SeedLoader().loadIfNeeded(into: container.mainContext)
+        } catch {
+            print("Seeding failed: \(error)")
+        }
+        return container
     }()
 
     var body: some Scene {
