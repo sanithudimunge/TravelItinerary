@@ -6,18 +6,19 @@ import SwiftData
 nonisolated final class Day {
     var date: Date
     var number: Int
+    var trip: Trip?
 
-    @Relationship(deleteRule: .cascade)
+    @Relationship(deleteRule: .cascade, inverse: \Activity.day)
     var activities: [Activity]
 
     /// Activities sorted by `sortIndex`.
     var ordered: [Activity] {
-        fatalError("TODO")
+        activities.sorted { $0.sortIndex < $1.sortIndex }
     }
 
     /// Sendable snapshots of the day's activities that have a valid location, in order.
     var mappableStops: [StopSnapshot] {
-        fatalError("TODO")
+        ordered.compactMap { $0.snapshot() }
     }
 
     init(date: Date, number: Int, activities: [Activity] = []) {

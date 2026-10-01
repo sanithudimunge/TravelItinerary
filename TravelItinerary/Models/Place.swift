@@ -12,9 +12,14 @@ nonisolated final class Place: Mappable {
     var isVerified: Bool
     var address: String?
 
+    /// Activities at this place. Deleting the place sets their `place` to `nil`.
+    @Relationship(deleteRule: .nullify, inverse: \Activity.place)
+    var activities: [Activity] = []
+
     /// The place's coordinate, or `nil` if latitude/longitude are out of range.
     var coordinate: CLLocationCoordinate2D? {
-        fatalError("TODO")
+        guard (-90...90).contains(latitude), (-180...180).contains(longitude) else { return nil }
+        return CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
     }
 
     /// Human-readable data-quality problems with this place.

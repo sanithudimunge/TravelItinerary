@@ -12,7 +12,11 @@ import SwiftData
 struct TravelItineraryApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Trip.self,
+            Day.self,
+            Activity.self,
+            Place.self,
+            User.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -25,7 +29,7 @@ struct TravelItineraryApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TripListView()
         }
         .modelContainer(sharedModelContainer)
     }

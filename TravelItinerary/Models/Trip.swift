@@ -10,12 +10,16 @@ nonisolated final class Trip {
     var endDate: Date
     var owner: User?
 
-    @Relationship(deleteRule: .cascade)
+    @Relationship(deleteRule: .cascade, inverse: \Day.trip)
     var days: [Day]
 
-    /// Number of calendar days the trip spans.
+    /// Number of calendar days the trip spans, counting both the first and last day.
     var dayCount: Int {
-        fatalError("TODO")
+        // Compare start-of-day values so the times of day don't change the count.
+        let calendar = Calendar.current
+        let start = calendar.startOfDay(for: startDate)
+        let end = calendar.startOfDay(for: endDate)
+        return (calendar.dateComponents([.day], from: start, to: end).day ?? 0) + 1
     }
 
     init(id: UUID = UUID(), title: String, startDate: Date, endDate: Date, owner: User? = nil, days: [Day] = []) {

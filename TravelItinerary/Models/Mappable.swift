@@ -9,6 +9,6 @@ nonisolated protocol Mappable {
 nonisolated extension Mappable {
     /// Whether the item has a usable coordinate.
     var hasLocation: Bool {
-        fatalError("TODO")
+        coordinate != nil
     }
 }

@@ -12,13 +12,14 @@ nonisolated final class Activity: Mappable {
     var notes: String
     var sortIndex: Int
     var place: Place?
+    var day: Day?
 
     var name: String {
-        fatalError("TODO")
+        title
     }
 
     var coordinate: CLLocationCoordinate2D? {
-        fatalError("TODO")
+        place?.coordinate
     }
 
     init(title: String, category: ActivityCategory, start: Date, end: Date? = nil, notes: String = "", sortIndex: Int = 0, place: Place? = nil) {
