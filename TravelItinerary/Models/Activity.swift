@@ -39,6 +39,15 @@ nonisolated final class Activity: Mappable {
 
     /// Checks the activity is consistent (e.g. end after start, has a location).
     func validate() throws(ItineraryError) {
-        fatalError("TODO")
+        try Self.validate(title: title, start: start, end: end, place: place)
+    }
+
+    /// Validates activity values before they're applied to a model, so the editor can
+    /// check its draft without creating or changing an `Activity`.
+    static func validate(title: String, start: Date, end: Date?, place: Place?) throws(ItineraryError) {
+        if let end {
+            guard end > start else { throw .endBeforeStart }
+        }
+        guard place?.coordinate != nil else { throw .missingLocation(title) }
     }
 }

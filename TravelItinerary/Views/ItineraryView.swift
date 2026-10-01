@@ -5,6 +5,8 @@ import SwiftUI
 struct ItineraryView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var viewModel: ItineraryViewModel
+    @State private var isAddingActivity = false
+    @State private var editingActivity: Activity?
 
     init(trip: Trip) {
         _viewModel = State(initialValue: ItineraryViewModel(trip: trip))
@@ -24,6 +26,22 @@ struct ItineraryView: View {
         }
         .navigationTitle(viewModel.trip.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button("Add Activity", systemImage: "plus") { isAddingActivity = true }
+                    .disabled(viewModel.selectedDay == nil)
+            }
+        }
+        .sheet(isPresented: $isAddingActivity) {
+            if let day = viewModel.selectedDay {
+                ActivityEditorView(day: day, viewModel: viewModel)
+            }
+        }
+        .sheet(item: $editingActivity) { activity in
+            if let day = activity.day ?? viewModel.selectedDay {
+                ActivityEditorView(day: day, activity: activity, viewModel: viewModel)
+            }
+        }
     }
 
     private var dayPicker: some View {
@@ -55,7 +73,12 @@ struct ItineraryView: View {
                 )
             } else {
                 ForEach(activities) { activity in
-                    ActivityRow(activity: activity)
+                    Button {
+                        editingActivity = activity
+                    } label: {
+                        ActivityRow(activity: activity)
+                    }
+                    .tint(.primary)
                 }
                 .onDelete { offsets in
                     delete(offsets.map { activities[$0] }, from: day)

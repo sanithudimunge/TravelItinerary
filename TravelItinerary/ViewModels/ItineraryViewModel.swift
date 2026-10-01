@@ -21,7 +21,10 @@ final class ItineraryViewModel {
 
     /// Validates and adds an activity to a day.
     func add(_ activity: Activity, to day: Day) throws(ItineraryError) {
-        fatalError("TODO")
+        try activity.validate()
+        // New activities go to the end of the day.
+        activity.sortIndex = (day.activities.map(\.sortIndex).max() ?? -1) + 1
+        day.activities.append(activity)
     }
 
     /// Reorders activities in the selected day.
