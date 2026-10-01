@@ -1,0 +1,29 @@
+import Foundation
+import Observation
+
+/// Drives the itinerary screen: selected day, its route, and editing actions.
+@Observable
+@MainActor
+final class ItineraryViewModel {
+    var trip: Trip
+    var selectedDay: Day?
+    var route: DayRoute?
+    var errorMessage: String?
+
+    init(trip: Trip) {
+        self.trip = trip
+    }
+
+    /// Calculates the route for the selected day.
+    func loadRoute() async {
+    }
+
+    /// Validates and adds an activity to a day.
+    func add(_ activity: Activity, to day: Day) throws(ItineraryError) {
+        fatalError("TODO")
+    }
+
+    /// Reorders activities in the selected day.
+    func move(from source: IndexSet, to destination: Int) {
+    }
+}
