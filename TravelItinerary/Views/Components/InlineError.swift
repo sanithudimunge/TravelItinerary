@@ -11,3 +11,8 @@ struct InlineError: View {
             .accessibilityLabel("Error: \(message)")
     }
 }
+
+#Preview {
+    InlineError(message: ItineraryError.endBeforeStart.localizedDescription)
+        .padding()
+}

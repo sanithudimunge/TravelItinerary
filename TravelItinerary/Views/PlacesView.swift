@@ -6,3 +6,7 @@ struct PlacesView: View {
         Text("PlacesView")
     }
 }
+
+#Preview {
+    PlacesView()
+}

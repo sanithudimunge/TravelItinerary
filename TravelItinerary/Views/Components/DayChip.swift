@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 /// A coloured chip identifying a day.
@@ -21,5 +22,17 @@ struct DayChip: View {
         .background(isSelected ? tint : tint.opacity(0.15), in: Capsule())
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+}
+
+#Preview(traits: .sampleData) {
+    @Previewable @Query var trips: [Trip]
+    if let trip = trips.first {
+        HStack {
+            ForEach(trip.orderedDays) { day in
+                DayChip(day: day, isSelected: day.number == 1)
+            }
+        }
+        .padding()
     }
 }

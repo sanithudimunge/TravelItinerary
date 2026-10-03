@@ -6,3 +6,7 @@ struct StatusBadge: View {
         Text("StatusBadge")
     }
 }
+
+#Preview {
+    StatusBadge()
+}

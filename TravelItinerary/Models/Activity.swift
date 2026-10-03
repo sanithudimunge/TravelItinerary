@@ -34,20 +34,27 @@ nonisolated final class Activity: Mappable {
 
     /// A Sendable copy suitable for routing, or `nil` if the activity has no location.
     func snapshot() -> StopSnapshot? {
-        fatalError("TODO")
+        guard let coordinate else { return nil }
+        return StopSnapshot(name: name, coordinate: coordinate)
     }
 
-    /// Checks the activity is consistent (e.g. end after start, has a location).
+    /// Checks the activity is consistent (e.g. end after start, any chosen place has a valid location).
     func validate() throws(ItineraryError) {
         try Self.validate(title: title, start: start, end: end, place: place)
     }
 
     /// Validates activity values before they're applied to a model, so the editor can
     /// check its draft without creating or changing an `Activity`.
+    ///
+    /// A missing place is allowed; the activity just won't appear on the map or in the day's route.
+    /// A place that *is* chosen must have a valid coordinate.
     static func validate(title: String, start: Date, end: Date?, place: Place?) throws(ItineraryError) {
         if let end {
             guard end > start else { throw .endBeforeStart }
         }
-        guard place?.coordinate != nil else { throw .missingLocation(title) }
+        // Picking a place whose coordinate is broken is almost certainly a mistake, unlike picking none.
+        if let place, place.coordinate == nil {
+            throw .missingLocation(place.name)
+        }
     }
 }

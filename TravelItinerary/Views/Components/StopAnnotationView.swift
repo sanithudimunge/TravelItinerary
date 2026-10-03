@@ -6,3 +6,7 @@ struct StopAnnotationView: View {
         Text("StopAnnotationView")
     }
 }
+
+#Preview {
+    StopAnnotationView()
+}

@@ -69,3 +69,12 @@ private struct TripRow: View {
         .padding(.vertical, 2)
     }
 }
+
+#Preview(traits: .sampleData) {
+    TripListView()
+}
+
+#Preview("No Trips") {
+    TripListView()
+        .modelContainer(for: Trip.self, inMemory: true)
+}

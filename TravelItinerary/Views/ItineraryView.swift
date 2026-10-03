@@ -95,3 +95,12 @@ struct ItineraryView: View {
         }
     }
 }
+
+#Preview(traits: .sampleData) {
+    @Previewable @Query var trips: [Trip]
+    if let trip = trips.first {
+        NavigationStack {
+            ItineraryView(trip: trip)
+        }
+    }
+}

@@ -27,6 +27,15 @@ nonisolated final class Trip {
         days.sorted { $0.number < $1.number }
     }
 
+    /// Throws `.invalidDateRange` if the trip would end on an earlier day than it starts.
+    static func validateDates(start: Date, end: Date) throws(ItineraryError) {
+        // Compare whole days so a same-day trip is valid whatever the times are.
+        let calendar = Calendar.current
+        guard calendar.startOfDay(for: end) >= calendar.startOfDay(for: start) else {
+            throw .invalidDateRange
+        }
+    }
+
     /// Replaces `days` with one empty `Day` for each date from `startDate` to `endDate`.
     func generateDays() {
         let calendar = Calendar.current

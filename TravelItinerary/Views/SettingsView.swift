@@ -6,3 +6,7 @@ struct SettingsView: View {
         Text("SettingsView")
     }
 }
+
+#Preview {
+    SettingsView()
+}

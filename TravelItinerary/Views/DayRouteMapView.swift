@@ -6,3 +6,7 @@ struct DayRouteMapView: View {
         Text("DayRouteMapView")
     }
 }
+
+#Preview {
+    DayRouteMapView()
+}

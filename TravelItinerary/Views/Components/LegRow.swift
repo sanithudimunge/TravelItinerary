@@ -6,3 +6,7 @@ struct LegRow: View {
         Text("LegRow")
     }
 }
+
+#Preview {
+    LegRow()
+}

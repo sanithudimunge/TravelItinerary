@@ -65,8 +65,11 @@ struct ActivityEditorView: View {
                 Section("Location") {
                     Picker("Place", selection: $place) {
                         Text("None").tag(Place?.none)
+                        // Places with broken coordinates stay listed so existing selections still show;
+                        // the label warns that saving with one will fail validation.
                         ForEach(places) { place in
-                            Text(place.name).tag(Optional(place))
+                            Text(place.coordinate == nil ? "\(place.name) (location under review)" : place.name)
+                                .tag(Optional(place))
                         }
                     }
                     .pickerStyle(.navigationLink)
@@ -124,5 +127,19 @@ struct ActivityEditorView: View {
             // `error` is an ItineraryError here thanks to the typed `do throws`.
             errorMessage = error.localizedDescription
         }
+    }
+}
+
+#Preview("New Activity", traits: .sampleData) {
+    @Previewable @Query var trips: [Trip]
+    if let trip = trips.first, let day = trip.orderedDays.first {
+        ActivityEditorView(day: day, viewModel: ItineraryViewModel(trip: trip))
+    }
+}
+
+#Preview("Edit Activity", traits: .sampleData) {
+    @Previewable @Query var trips: [Trip]
+    if let trip = trips.first, let day = trip.orderedDays.first, let activity = day.ordered.first {
+        ActivityEditorView(day: day, activity: activity, viewModel: ItineraryViewModel(trip: trip))
     }
 }

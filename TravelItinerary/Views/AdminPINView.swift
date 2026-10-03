@@ -6,3 +6,7 @@ struct AdminPINView: View {
         Text("AdminPINView")
     }
 }
+
+#Preview {
+    AdminPINView()
+}

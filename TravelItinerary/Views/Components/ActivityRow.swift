@@ -1,3 +1,4 @@
+import SwiftData
 import SwiftUI
 
 /// A row summarising one activity.
@@ -18,6 +19,7 @@ struct ActivityRow: View {
                 Text(timeText)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+
                 locationLabel
                     .font(.footnote)
             }
@@ -37,8 +39,9 @@ struct ActivityRow: View {
     private var locationLabel: some View {
         if let place = activity.place {
             if activity.hasLocation {
-                Label(place.name, systemImage: "mappin.and.ellipse")
+                Text(place.name)
                     .foregroundStyle(.secondary)
+
             } else {
                 Label("\(place.name) has an invalid location", systemImage: "exclamationmark.triangle.fill")
                     .foregroundStyle(Color("Warning"))
@@ -47,5 +50,20 @@ struct ActivityRow: View {
             Label("No location", systemImage: "exclamationmark.triangle.fill")
                 .foregroundStyle(Color("Warning"))
         }
+    }
+}
+
+#Preview(traits: .sampleData) {
+    @Previewable @Query var trips: [Trip]
+    @Previewable @Query(filter: #Predicate<Place> { $0.name == "Adam's Peak" }) var brokenPlaces: [Place]
+    List {
+        if let day = trips.first?.orderedDays.first {
+            ForEach(day.ordered) { activity in
+                ActivityRow(activity: activity)
+            }
+        }
+        // Not inserted into the store; these only show the two warning states.
+        ActivityRow(activity: Activity(title: "Free afternoon", category: .entertainment, start: .now))
+        ActivityRow(activity: Activity(title: "Climb Adam's Peak", category: .sight, start: .now, place: brokenPlaces.first))
     }
 }
