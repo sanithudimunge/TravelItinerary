@@ -31,6 +31,10 @@ struct ItineraryView: View {
                 Button("Add Activity", systemImage: "plus") { isAddingActivity = true }
                     .disabled(viewModel.selectedDay == nil)
             }
+            // Toggles the list's edit mode, which shows the reorder and delete controls.
+            ToolbarItem(placement: .topBarTrailing) {
+                EditButton()
+            }
         }
         .sheet(isPresented: $isAddingActivity) {
             if let day = viewModel.selectedDay {
@@ -82,6 +86,10 @@ struct ItineraryView: View {
                 }
                 .onDelete { offsets in
                     delete(offsets.map { activities[$0] }, from: day)
+                }
+                // Drag handles appear in edit mode; the view model saves the new order via `sortIndex`.
+                .onMove { source, destination in
+                    viewModel.move(from: source, to: destination)
                 }
             }
         }

@@ -1,5 +1,7 @@
 import Foundation
 import Observation
+// Needed for `Array.move(fromOffsets:toOffset:)`, which SwiftUI provides.
+import SwiftUI
 
 /// Drives the itinerary screen: selected day, its route, and editing actions.
 @Observable
@@ -28,6 +30,15 @@ final class ItineraryViewModel {
     }
 
     /// Reorders activities in the selected day.
+    ///
+    /// `source` and `destination` are positions in `day.ordered`, which is what the list shows.
     func move(from source: IndexSet, to destination: Int) {
+        guard let day = selectedDay else { return }
+        var reordered = day.ordered
+        reordered.move(fromOffsets: source, toOffset: destination)
+        // Renumber from 0 so `sortIndex` matches the new order. This also closes any gaps left by deletions.
+        for (index, activity) in reordered.enumerated() {
+            activity.sortIndex = index
+        }
     }
 }
