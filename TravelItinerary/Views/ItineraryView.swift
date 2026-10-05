@@ -7,6 +7,7 @@ struct ItineraryView: View {
     @State private var viewModel: ItineraryViewModel
     @State private var isAddingActivity = false
     @State private var editingActivity: Activity?
+    @State private var isShowingMap = false
 
     init(trip: Trip) {
         _viewModel = State(initialValue: ItineraryViewModel(trip: trip))
@@ -35,6 +36,14 @@ struct ItineraryView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 EditButton()
             }
+            // Shows the selected day's stops and route on a map.
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Map", systemImage: "map") { isShowingMap = true }
+                    .disabled(viewModel.selectedDay == nil)
+            }
+        }
+        .navigationDestination(isPresented: $isShowingMap) {
+            DayRouteMapView(viewModel: viewModel)
         }
         .sheet(isPresented: $isAddingActivity) {
             if let day = viewModel.selectedDay {
@@ -83,6 +92,15 @@ struct ItineraryView: View {
                         ActivityRow(activity: activity)
                     }
                     .tint(.primary)
+                    .contextMenu {
+                        // Only offered when the activity has a valid location to hand off.
+                        if let stop = activity.snapshot() {
+                            Menu("Open in…", systemImage: "arrow.up.forward.app") {
+                                Button("Apple Maps") { MapsLauncher.openPlaceInAppleMaps(stop) }
+                                Button("Google Maps") { MapsLauncher.openPlaceInGoogleMaps(stop) }
+                            }
+                        }
+                    }
                 }
                 .onDelete { offsets in
                     delete(offsets.map { activities[$0] }, from: day)

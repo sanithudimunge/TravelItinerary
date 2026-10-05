@@ -5,4 +5,12 @@ import Foundation
 nonisolated enum TransportMode: String, Codable, CaseIterable, Sendable {
     case walking
     case driving
+
+    /// SF Symbol name representing the mode.
+    var symbolName: String {
+        switch self {
+        case .walking: "figure.walk"
+        case .driving: "car.fill"
+        }
+    }
 }
