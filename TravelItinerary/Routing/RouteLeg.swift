@@ -1,5 +1,6 @@
 import CoreLocation
 import Foundation
+import MapKit
 
 /// A single journey between two consecutive stops.
 nonisolated struct RouteLeg: Sendable, Hashable {
@@ -25,5 +26,24 @@ nonisolated struct RouteLeg: Sendable, Hashable {
         hasher.combine(from)
         hasher.combine(to)
         hasher.combine(mode)
+    }
+}
+
+extension RouteLeg {
+    /// Copies what the app needs out of an `MKRoute`, so only Sendable values are kept.
+    nonisolated init(from: StopSnapshot, to: StopSnapshot, mode: TransportMode, route: MKRoute) {
+        // MKPolyline stores its points in a C buffer; copy them into a Swift array.
+        let polyline = route.polyline
+        var coordinates = [CLLocationCoordinate2D](repeating: kCLLocationCoordinate2DInvalid, count: polyline.pointCount)
+        polyline.getCoordinates(&coordinates, range: NSRange(location: 0, length: polyline.pointCount))
+
+        self.init(
+            from: from,
+            to: to,
+            travelTime: route.expectedTravelTime,
+            distance: route.distance,
+            mode: mode,
+            path: coordinates
+        )
     }
 }

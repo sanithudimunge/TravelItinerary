@@ -12,6 +12,9 @@ final class ItineraryViewModel {
     var route: DayRoute?
     var errorMessage: String?
 
+    /// Shared so its leg cache survives switching between days.
+    private let routeService = RouteService()
+
     init(trip: Trip) {
         self.trip = trip
         self.selectedDay = trip.orderedDays.first
@@ -19,6 +22,19 @@ final class ItineraryViewModel {
 
     /// Calculates the route for the selected day.
     func loadRoute() async {
+        guard let day = selectedDay else {
+            route = nil
+            return
+        }
+        // Snapshots are taken here on the main actor; only these Sendable copies go to the service.
+        let stops = day.mappableStops
+        do throws(ItineraryError) {
+            route = try await routeService.route(for: stops)
+            errorMessage = nil
+        } catch {
+            route = nil
+            errorMessage = error.localizedDescription
+        }
     }
 
     /// Validates and adds an activity to a day.
